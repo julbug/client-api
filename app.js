@@ -1,9 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const port = process.env.PORT || 3001;
 
 //API security
 app.use(helmet());
@@ -11,22 +13,37 @@ app.use(helmet());
 //handle CORS error
 app.use(cors());
 
+
+//MongoDB Connection Setup
+const mongoose = require('mongoose');
+
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+});
+
+if(process.env.NODE_ENV !== "production"){
+    const mDB = mongoose.connection;
+    mDB.on("open", ()=>{
+    console.log("MongoDB is connected")
+})
+mDB.on("error", (error)=>{
+    console.log(error)
+})
 //Logger
 app.use(morgan("tiny"));
-
+}
 
 //Set body bodyParser
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 
-
-
-const port = process.env.PORT || 3001;
-
 //Load Routers
-const userRouter = requires("./src/routers/user.router.js")
-const ticketRouter = requires("./src/routers/ticket.router.js")
+const userRouter = require("./src/routers/user.router.js");
+const ticketRouter = require("./src/routers/ticket.router.js");
 
 
 //Use Routers
@@ -36,7 +53,7 @@ app.use("/v1/ticket", ticketRouter);
 
 
 //Error Handler
-const handleError = require("./src/utils/errorHandler")
+const handleError = require("./src/utils/errorHandler");
 
 app.use("*", (req, res, next) => {
     const error = new Error ("Resources not found!")
