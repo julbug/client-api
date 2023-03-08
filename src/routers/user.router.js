@@ -2,8 +2,9 @@ const express = require("express");
 const { route }= require ("./ticket.router.js");
 const router = express.Router();
 
-const{insertUser} = require("../model/user/User.model")
-const{hashPassword} = require("../helpers/bcrypt.helper")
+const{insertUser, getUserByEmail} = require("../model/user/User.model");
+const{hashPassword, comparePassword} = require("../helpers/bcrypt.helper");
+const {json} = require("body-parser");
 
 
 router.all("/", (req, res, next) => {
@@ -11,7 +12,7 @@ router.all("/", (req, res, next) => {
     next();
 });
 
-
+//Create new user route
 router.post('/', async (req, res)=>{
     const {name, company, address, phone, email, password} =req.body;
 
@@ -39,5 +40,24 @@ router.post('/', async (req, res)=>{
         res.json({statux: "error", message: error.message});  
     }
 });
+
+//User sign in Router
+router.post("/login", async (req, res)=> {
+    console.log(req.body);
+
+    const{email, password} = req.body;
+
+    if(!email || !password){
+       return res.json({status:"error", message:"Invalid Form Submission"});
+    }
+
+     const user = await getUserByEmail(email);
+     
+     const passFromDb = user._id ? user.password : null;
+
+     const result = await comparePassword(password, passFromDb)
+    
+    res.json({status:"success", message:"Login Successful!"});
+})
 
 module.exports = router;
