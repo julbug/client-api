@@ -53,7 +53,10 @@ router.post("/login", async (req, res)=> {
 
      const user = await getUserByEmail(email);
      
-     const passFromDb = user._id ? user.password : null;
+     const passFromDb = user && user._id ? user.password : null;
+
+     if(!passFromDb)
+     return res.json({status:"error", message:"Invalid email or password"});
 
      const result = await comparePassword(password, passFromDb)
     
