@@ -5,7 +5,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const port = process.env.PORT || 3001;
+// const port = process.env.PORT || 3001;
+const port = process.env.PORT ;
 
 //API security
 // app.use(helmet());
@@ -13,15 +14,15 @@ const port = process.env.PORT || 3001;
 //handle CORS error
 app.use(cors());
 
-
+console.log(process.env.PORT)
 //MongoDB Connection Setup
 const mongoose = require('mongoose');
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true
+    // useUnifiedTopology: true,
+    // useFindAndModify: false,
+    // useCreateIndex: true
 });
 
 if(process.env.NODE_ENV !== "production"){
