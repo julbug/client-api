@@ -1,5 +1,5 @@
 const express = require("express");
-const { route }= require ("./ticket.router.js");
+const { route } = require ("./ticket.router.js");
 const router = express.Router();
 
 const{insertUser, getUserByEmail} = require("../model/user/User.model");
@@ -74,8 +74,8 @@ router.post("/login", async (req, res)=> {
         res.json({status:"error", message:"Invalid email or password"});
      }
     //if the password matches, then create the AccesssJWT and RefreshJWT
-     const accessJWT = await createAccessJWT(user.email);
-     const refreshJWT = await createRefreshJWT(user.email);
+     const accessJWT = await createAccessJWT(user.email, `${user._id}`);
+     const refreshJWT = await createRefreshJWT(user.email, `${user._id}`);
 
      res.json({
         status:"success",
