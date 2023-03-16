@@ -2,10 +2,12 @@ const express = require("express");
 const { route } = require ("./ticket.router.js");
 const router = express.Router();
 
-const{insertUser, getUserByEmail} = require("../model/user/User.model");
+const{insertUser, getUserByEmail, getUserById} = require("../model/user/User.model");
 const{hashPassword, comparePassword} = require("../helpers/bcrypt.helper");
-const { createAccessJWT, createRefreshJWT} = require("../helpers/jwt.helper")
-const {json} = require("body-parser");
+const { createAccessJWT, createRefreshJWT} = require("../helpers/jwt.helper");
+// const {json} = require("body-parser");
+
+const {userAuthorization} = require("../middlewares/authorization.middleware");
 const { createAccessJWT, createRefreshJWT } = require("../helpers/jwt.helper.js");
 
 
@@ -13,6 +15,20 @@ router.all("/", (req, res, next) => {
     // res.json({ message: "return from user router" });
     next();
 });
+
+//Get user profile router
+router.get("/", userAuthorization, async (req, res)=>{
+
+    //this data coming from database
+    const _id = req.userId
+
+    const userProf = await getUserById(_id)
+    //comments continued from authorization.middlewar.js
+    //3. extract user id
+    //4. get user profile based on the user id
+
+    res.json({ user: userProf })
+})
 
 //Create new user route
 router.post('/', async (req, res)=>{
@@ -84,5 +100,7 @@ router.post("/login", async (req, res)=> {
         refreshJWT,
     });
 });
+
+
 
 module.exports = router;
