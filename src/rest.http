@@ -28,3 +28,9 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImUyQGUuY29tIiwi
     "email": "123@123.com",
     "password": "secret123"
 }
+
+###Token routers
+
+##Get refreshed token
+GET http://localhost:3001/v1/tokens
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImUyQGUuY29tIiwiaWF0IjoxNjA0OTcwODY5LCJleHAiOjE2MDc1NjI4Njl9.n798jpZ8w9MeEpvU8QvHBFq8TAbEZRWHSFpWXaB5_iE
